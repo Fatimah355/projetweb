@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="ma présentation">
+    <link rel="stylesheet" href="moi.css">
+    <title>Document</title>
+</head>
+<title>Sénégal — Globe Terrestre</title>
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;900&family=Crimson+Pro:ital,wght@0,300;0,400;1,300&display=swap');
+
+    :root {
+        --gold: #c9a84c;
+        --gold-light: #f0d080;
+        --green: #00853F;
+        --red: #E31B23;
+        --glow: rgba(201, 168, 76, 0.4);
+        --bg: #050d1a;
+    }
+
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    body {
+        background: var(--bg);
+        color: #e8dcc8;
+        font-family: 'Crimson Pro', serif;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        overflow-x: hidden;
+        /* cache le défilement horizontal (normal) */
+        overflow-y: auto;
+        /* autorise le défilement vertical si besoin */
+    }
+
+    body::before {
+        content: '';
+        position: fixed;
+        inset: 0;
+        background-image:
+            radial-gradient(1px 1px at 10% 15%, rgba(255, 255, 255, 0.8) 0%, transparent 100%),
+            radial-gradient(1px 1px at 25% 40%, rgba(255, 255, 255, 0.6) 0%, transparent 100%),
+            radial-gradient(1.5px 1.5px at 50% 8%, rgba(255, 255, 255, 0.9) 0%, transparent 100%),
+            radial-gradient(1px 1px at 75% 22%, rgba(255, 255, 255, 0.7) 0%, transparent 100%),
+            radial-gradient(1px 1px at 88% 60%, rgba(255, 255, 255, 0.5) 0%, transparent 100%),
+            radial-gradient(1px 1px at 35% 75%, rgba(255, 255, 255, 0.6) 0%, transparent 100%),
+            radial-gradient(1px 1px at 92% 10%, rgba(255, 255, 255, 0.8) 0%, transparent 100%);
+        pointer-events: none;
+        z-index: 0;
+    }
+
+    header {
+        position: relative;
+        z-index: 10;
+        text-align: center;
+        margin-bottom: 1.2rem;
+        animation: fadeDown 1.2s ease both;
+    }
+
+    header h1 {
+        font-family: 'Cinzel', serif;
+        font-size: clamp(1.4rem, 4vw, 2.4rem);
+        font-weight: 900;
+        letter-spacing: 0.2em;
+        color: var(--gold-light);
+        text-shadow: 0 0 30px var(--glow);
+    }
+
+    header p {
+        font-size: 0.9rem;
+        color: rgba(232, 220, 200, 0.55);
+        letter-spacing: 0.15em;
+        font-style: italic;
+        margin-top: 0.3rem;
+    }
+
+    .videos-section {
+        position: relative;
+        z-index: 10;
+        width: 100%;
+        max-width: 860px;
+        margin-top: 2.5rem;
+        padding: 0 1rem 3rem;
+        animation: fadeDown 1.5s ease both 0.6s;
+    }
+
+    .videos-title {
+        font-family: 'Cinzel', serif;
+        font-size: 0.88rem;
+        letter-spacing: 0.18em;
+        color: var(--gold);
+        text-align: center;
+        margin-bottom: 1.2rem;
+        border-bottom: 1px solid rgba(201, 168, 76, 0.2);
+        padding-bottom: 0.6rem;
+    }
+
+    .videos-grid {
+        display: flex;
+        gap: 1.5rem;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
+    .video-card {
+        flex: 1;
+        min-width: 260px;
+        max-width: 400px;
+    }
+
+    .video-label {
+        font-family: 'Cinzel', serif;
+        font-size: 0.68rem;
+        letter-spacing: 0.12em;
+        color: rgba(201, 168, 76, 0.65);
+        margin-bottom: 0.5rem;
+    }
+
+    .video-box {
+        background: rgba(13, 34, 64, 0.72);
+        border: 1px solid rgba(201, 168, 76, 0.28);
+        border-radius: 8px;
+        overflow: hidden;
+        min-height: 180px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 4px 30px rgba(0, 0, 0, 0.4);
+    }
+
+    .upload-area {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 0.6rem;
+        width: 100%;
+        min-height: 180px;
+        cursor: pointer;
+        transition: background 0.2s;
+        padding: 1.5rem;
+    }
+
+    .upload-area:hover {
+        background: rgba(201, 168, 76, 0.07);
+    }
+
+    .upload-icon {
+        font-size: 2rem;
+        color: var(--gold);
+        opacity: 0.5;
+    }
+
+    .upload-text {
+        font-family: 'Crimson Pro', serif;
+        font-size: 0.85rem;
+        font-style: italic;
+        color: rgba(232, 220, 200, 0.45);
+        text-align: center;
+    }
+
+    .upload-area input[type="file"] {
+        display: none;
+    }
+
+    .scene {
+        position: relative;
+        z-index: 10;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 2rem;
+    }
+
+    /* Globe */
+    .globe-wrapper {
+        position: relative;
+        width: 380px;
+        height: 380px;
+        flex-shrink: 0;
+    }
+
+    canvas {
+        border-radius: 50%;
+        display: block;
+        box-shadow: 0 0 60px rgba(201, 168, 76, 0.25), 0 0 120px rgba(0, 133, 63, 0.1);
+    }
+
+    .pin {
+        position: absolute;
+        z-index: 20;
+        pointer-events: none;
+        transform: translate(-50%, -100%);
+    }
+
+    .pin svg {
+        filter: drop-shadow(0 0 8px rgba(227, 27, 35, 0.8));
+        animation: pinPulse 1.8s ease-in-out infinite;
+    }
+
+    @keyframes pinPulse {
+
+        0%,
+        100% {
+            transform: translateY(0);
+        }
+
+        50% {
+            transform: translateY(-6px);
+        }
+    }
+
+    .ripple {
+        position: absolute;
+        width: 40px;
+        height: 14px;
+        border-radius: 50%;
+        border: 2px solid var(--red);
+        opacity: 0;
+        animation: rippleAnim 2s ease-out infinite;
+        transform: translate(-50%, -50%);
+        z-index: 19;
+    }
+
+    .ripple:nth-child(2) {
+        animation-delay: 0.6s;
+    }
+
+    .ripple:nth-child(3) {
+        animation-delay: 1.2s;
+    }
+
+    @keyframes rippleAnim {
+        0% {
+            transform: translate(-50%, -50%) scale(0.3);
+            opacity: 0.9;
+        }
+
+        100% {
+            transform: translate(-50%, -50%) scale(2.5);
+            opacity: 0;
+        }
+    }
+
+    /* Panneaux */
+    .panels {
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+        width: 215px;
+        animation: fadeRight 1.4s ease both 0.4s;
+    }
+
+    .card {
+        background: rgba(13, 34, 64, 0.72);
+        border: 1px solid rgba(201, 168, 76, 0.28);
+        border-radius: 8px;
+        padding: 1rem 1.2rem;
+        backdrop-filter: blur(10px);
+        box-shadow: 0 4px 30px rgba(0, 0, 0, 0.4);
+    }
+
+    .card h2 {
+        font-family: 'Cinzel', serif;
+        font-size: 0.78rem;
+        color: var(--gold);
+        letter-spacing: 0.12em;
+        margin-bottom: 0.65rem;
+        border-bottom: 1px solid rgba(201, 168, 76, 0.18);
+        padding-bottom: 0.35rem;
+    }
+
+    /* Sénégal */
+    .info-row {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 0.38rem;
+        font-size: 0.83rem;
+    }
+
+    .info-row .label {
+        color: rgba(232, 220, 200, 0.5);
+        font-style: italic;
+    }
+
+    .info-row .value {
+        color: #f0e8d0;
+    }
+
+    .flag {
+        display: flex;
+        border-radius: 4px;
+        overflow: hidden;
+        margin-top: 0.75rem;
+        height: 22px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+    }
+
+    .flag div {
+        flex: 1;
+    }
+
+    /* Plat */
+    .dish-name {
+        font-size: 1rem;
+        color: #f0e8d0;
+        margin-bottom: 0.2rem;
+    }
+
+    .dish-desc {
+        font-size: 0.75rem;
+        font-style: italic;
+        color: rgba(232, 220, 200, 0.5);
+        line-height: 1.4;
+    }
+
+    /* Pays à visiter */
+    .country-item {
+        display: flex;
+        align-items: center;
+        gap: 0.55rem;
+        font-size: 0.86rem;
+        color: #f0e8d0;
+        cursor: pointer;
+        padding: 0.28rem 0.45rem;
+        border-radius: 5px;
+        transition: background 0.2s;
+        margin-bottom: 0.3rem;
+    }
+
+    .country-item:last-child {
+        margin-bottom: 0;
+    }
+
+    .country-item:hover {
+        background: rgba(201, 168, 76, 0.12);
+    }
+
+    .country-item .emoji {
+        font-size: 1.1rem;
+    }
+
+    .country-item .goto {
+        margin-left: auto;
+        font-size: 0.62rem;
+        font-family: 'Cinzel', serif;
+        color: var(--gold);
+        opacity: 0.7;
+    }
+
+    /* Boutons */
+    .controls {
+        display: flex;
+        gap: 0.5rem;
+    }
+
+    button {
+        font-family: 'Cinzel', serif;
+        font-size: 0.62rem;
+        letter-spacing: 0.1em;
+        padding: 0.42rem 0.8rem;
+        background: transparent;
+        border: 1px solid rgba(201, 168, 76, 0.4);
+        color: var(--gold);
+        border-radius: 4px;
+        cursor: pointer;
+        transition: all 0.2s;
+        flex: 1;
+    }
+
+    button:hover {
+        background: rgba(201, 168, 76, 0.15);
+        border-color: var(--gold);
+    }
+
+    button.active {
+        background: rgba(201, 168, 76, 0.2);
+        border-color: var(--gold-light);
+    }
+
+    @keyframes fadeDown {
+        from {
+            opacity: 0;
+            transform: translateY(-20px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @keyframes fadeRight {
+        from {
+            opacity: 0;
+            transform: translateX(20px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }
+</style>
+
+<body>
+    <article>
+        <nav>
+            <div class="table">
+                <ul>
+                    <li class="menu-ind">
+                        <a href="index.html">Accueil</a>
+                    </li>
+                    <li class="menu-exp">
+                        <a href="moi.html">A propos</a>
+                    </li>
+                    <li class="menu-hob">
+                        <a href="hobbies.html">loisir</a>
+                    </li>
+                    <li class="menu-con">
+                        <a href="contact.html">Contactez-moi</a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+
+    </article>
+    <header>
+        <h1>🌍 MON GLOBE PERSONNEL</h1>
+        <p>Sénégal · Voyages · Culture</p>
+    </header>
+
+    <div class="scene">
+
+        <div class="globe-wrapper">
+            <canvas id="globe" width="380" height="380"></canvas>
+            <div class="ripple" id="r1"></div>
+            <div class="ripple" id="r2"></div>
+            <div class="ripple" id="r3"></div>
+            <div class="pin" id="pin">
+                <svg width="26" height="34" viewBox="0 0 28 36">
+                    <path d="M14 0C6.268 0 0 6.268 0 14c0 9.333 14 22 14 22s14-12.667 14-22C28 6.268 21.732 0 14 0z"
+                        fill="#E31B23" />
+                    <circle cx="14" cy="14" r="5" fill="white" />
+                </svg>
+            </div>
+        </div>
+
+        <div class="panels">
+
+            <!-- Sénégal -->
+            <div class="card">
+                <h2>🇸🇳 SÉNÉGAL</h2>
+                <div class="info-row"><span class="label">Capitale</span><span class="value">Dakar</span></div>
+                <div class="info-row"><span class="label">Continent</span><span class="value">Afrique de l'Ouest</span>
+                </div>
+                <div class="info-row"><span class="label">Coordonnées</span><span class="value">14.5°N · 14.5°W</span>
+                </div>
+                <div class="flag">
+                    <div style="background:#00853F;"></div>
+                    <div style="background:#FDEF42;display:flex;align-items:center;justify-content:center;"><span
+                            style="color:#00853F;font-size:12px;">★</span></div>
+                    <div style="background:#E31B23;"></div>
+                </div>
+            </div>
+
+            <!-- Plat préféré -->
+            <div class="card">
+                <h2>🍽️ MON PLAT PRÉFÉRÉ</h2>
+                <div class="dish-name">Yassa Poulet</div>
+                <div class="dish-desc">Poulet au citron &amp; oignons caramélisés, servi avec du riz. Un classique
+                    sénégalais.</div>
+            </div>
+
+            <!-- Pays à visiter -->
+            <div class="card">
+                <h2>✈️ PAYS À VISITER</h2>
+                <div class="country-item" onclick="focusCountry(35.86, 104.19)">
+                    <span class="emoji">🇨🇳</span> Chine <span class="goto">VOIR →</span>
+                </div>
+                <div class="country-item" onclick="focusCountry(20.59, 78.96)">
+                    <span class="emoji">🇮🇳</span> Inde <span class="goto">VOIR →</span>
+                </div>
+                <div class="country-item" onclick="focusCountry(37.09, -95.71)">
+                    <span class="emoji">🇺🇸</span> États-Unis <span class="goto">VOIR →</span>
+                </div>
+            </div>
+
+            <!-- Boutons -->
+            <div class="controls">
+                <button id="btnAuto" class="active" onclick="toggleAuto()">⟳ AUTO</button>
+                <button onclick="focusCountry(14.6, -17.4)">📍 SÉNÉGAL</button>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        const AFRICA = [[37.2, 11.5], [41.7, 12.6], [43.1, 11.0], [43.9, 10.0], [45.0, 10.7], [51.1, 11.8], [51.3, 12.5], [43.5, 15.0], [37.9, 22.0], [36.9, 22.0], [34.1, 27.2], [32.5, 31.0], [32.1, 31.6], [25.0, 31.5], [25.1, 30.0], [24.9, 22.0], [25.0, 20.0], [24.0, 20.0], [23.9, 15.7], [15.1, 15.0], [14.0, 14.0], [13.5, 13.5], [13.5, 10.0], [10.3, 5.5], [8.5, 4.5], [5.5, 5.0], [2.5, 5.5], [-1.5, 5.0], [-5.0, 5.2], [-8.5, 4.7], [-11.0, 6.9], [-15.0, 10.8], [-17.5, 14.8], [-17.5, 20.8], [-16.0, 23.5], [-13.0, 27.7], [-8.7, 28.0], [-8.7, 35.0], [-6.0, 36.0], [-2.0, 35.2], [4.0, 37.0], [9.5, 37.5], [10.5, 34.0], [11.5, 35.0], [12.0, 37.0], [15.0, 37.5], [18.5, 31.0], [20.0, 31.5], [25.0, 31.5], [32.5, 31.0], [36.9, 22.0], [37.2, 11.5]];
+        const EUROPE = [[-9, 36], [5, 44], [10, 46], [15, 47], [20, 46], [28, 45], [30, 46], [32, 46], [34, 42], [28, 41], [26, 38], [23, 38], [16, 38], [12, 38], [8, 38], [0, 42], [-2, 44], [-9, 44], [-9, 36]];
+        const AMERICAS = [[-170, 60], [-140, 70], [-100, 72], [-80, 72], [-65, 48], [-53, 47], [-55, 36], [-46, 24], [-40, 10], [-38, -5], [-48, -25], [-50, -35], [-65, -55], [-70, -45], [-78, -2], [-80, 8], [-83, 10], [-90, 16], [-86, 25], [-97, 26], [-105, 30], [-110, 24], [-120, 34], [-125, 46], [-130, 56], [-140, 58], [-150, 60], [-170, 60]];
+        const ASIA = [[35, 36], [40, 38], [50, 42], [60, 42], [70, 38], [80, 34], [90, 22], [100, 5], [104, 1], [110, -5], [120, -10], [130, 0], [140, 10], [145, 45], [135, 48], [125, 50], [110, 55], [100, 60], [90, 68], [80, 72], [60, 68], [40, 68], [28, 65], [35, 56], [38, 47], [35, 36]];
+        const SENEGAL = [[-17.5, 13.0], [-14.5, 12.7], [-11.4, 12.5], [-11.4, 15.5], [-12.3, 16.7], [-16.7, 16.5], [-17.5, 15.0], [-17.5, 13.0]];
+
+        const canvas = document.getElementById('globe');
+        const ctx = canvas.getContext('2d');
+        const W = canvas.width, H = canvas.height;
+        const R = W / 2 - 10, cx = W / 2, cy = H / 2;
+
+        let rotY = 0.35, rotX = -0.2;
+        let autoRotate = true, isDragging = false, lastMouse = null;
+        let targetRotY = null, targetRotX = null, animating = false;
+        let markerLat = 14.6, markerLon = -17.4;
+
+        function ll3d(lat, lon) {
+            const lr = lat * Math.PI / 180, lo = lon * Math.PI / 180;
+            return { x: Math.cos(lr) * Math.sin(lo), y: Math.sin(lr), z: Math.cos(lr) * Math.cos(lo) };
+        }
+        function rot(p, rY, rX) {
+            const x1 = p.x * Math.cos(rY) + p.z * Math.sin(rY);
+            const z1 = -p.x * Math.sin(rY) + p.z * Math.cos(rY);
+            return { x: x1, y: p.y * Math.cos(rX) - z1 * Math.sin(rX), z: p.y * Math.sin(rX) + z1 * Math.cos(rX) };
+        }
+        function proj(p) { return { x: cx + p.x * R, y: cy - p.y * R }; }
+
+        function drawPath(pts, fill, stroke) {
+            ctx.beginPath(); let s = false;
+            for (const [lon, lat] of pts) {
+                const p = rot(ll3d(lat, lon), rotY, rotX);
+                if (p.z <= -0.1) { s = false; continue; }
+                const q = proj(p);
+                s ? ctx.lineTo(q.x, q.y) : ctx.moveTo(q.x, q.y); s = true;
+            }
+            ctx.closePath();
+            ctx.fillStyle = fill; ctx.fill();
+            ctx.strokeStyle = stroke; ctx.lineWidth = 0.8; ctx.stroke();
+        }
+
+        function draw() {
+            ctx.clearRect(0, 0, W, H);
+            const og = ctx.createRadialGradient(cx - R * .3, cy - R * .3, R * .1, cx, cy, R);
+            og.addColorStop(0, '#0d2d50'); og.addColorStop(.5, '#071828'); og.addColorStop(1, '#020d18');
+            ctx.beginPath(); ctx.arc(cx, cy, R, 0, Math.PI * 2); ctx.fillStyle = og; ctx.fill();
+
+            // Grille
+            ctx.strokeStyle = 'rgba(100,160,220,0.12)'; ctx.lineWidth = 0.8;
+            for (let la = -80; la <= 80; la += 20) {
+                ctx.beginPath(); let f = true;
+                for (let lo = -180; lo <= 180; lo += 5) { const p = rot(ll3d(la, lo), rotY, rotX); if (p.z <= 0) { f = true; continue; } const q = proj(p); f ? ctx.moveTo(q.x, q.y) : ctx.lineTo(q.x, q.y); f = false; }
+                ctx.stroke();
+            }
+            for (let lo = -180; lo <= 180; lo += 20) {
+                ctx.beginPath(); let f = true;
+                for (let la = -90; la <= 90; la += 5) { const p = rot(ll3d(la, lo), rotY, rotX); if (p.z <= 0) { f = true; continue; } const q = proj(p); f ? ctx.moveTo(q.x, q.y) : ctx.lineTo(q.x, q.y); f = false; }
+                ctx.stroke();
+            }
+            // Équateur
+            ctx.strokeStyle = 'rgba(201,168,76,0.22)'; ctx.lineWidth = 1;
+            ctx.beginPath(); let f = true;
+            for (let lo = -180; lo <= 180; lo += 3) { const p = rot(ll3d(0, lo), rotY, rotX); if (p.z <= 0) { f = true; continue; } const q = proj(p); f ? ctx.moveTo(q.x, q.y) : ctx.lineTo(q.x, q.y); f = false; }
+            ctx.stroke();
+
+            drawPath(AMERICAS, '#1a3a1a', '#2a5a2a');
+            drawPath(EUROPE, '#1a3a1a', '#2a5a2a');
+            drawPath(ASIA, '#1a3a1a', '#2a5a2a');
+            drawPath(AFRICA, '#1a4a2e', '#2d7a4a');
+
+            // Sénégal
+            const senVisible = rot(ll3d(14.6, -17.4), rotY, rotX).z > 0;
+            drawPath(SENEGAL, senVisible ? 'rgba(0,133,63,0.7)' : 'rgba(0,133,63,0.2)', senVisible ? '#00ff88' : 'rgba(0,255,136,0.3)');
+
+            // Reflet
+            const sh = ctx.createRadialGradient(cx - R * .35, cy - R * .35, 0, cx - R * .2, cy - R * .2, R * .7);
+            sh.addColorStop(0, 'rgba(255,255,255,0.12)'); sh.addColorStop(.4, 'rgba(255,255,255,0.04)'); sh.addColorStop(1, 'rgba(0,0,0,0)');
+            ctx.beginPath(); ctx.arc(cx, cy, R, 0, Math.PI * 2); ctx.fillStyle = sh; ctx.fill();
+            ctx.beginPath(); ctx.arc(cx, cy, R, 0, Math.PI * 2); ctx.strokeStyle = 'rgba(201,168,76,0.35)'; ctx.lineWidth = 1.5; ctx.stroke();
+
+            // Pin
+            const mp = rot(ll3d(markerLat, markerLon), rotY, rotX);
+            const mq = proj(mp);
+            const vis = mp.z > 0.05;
+            const pin = document.getElementById('pin');
+            pin.style.display = vis ? 'block' : 'none';
+            pin.style.left = mq.x + 'px'; pin.style.top = (mq.y - 4) + 'px';
+            for (const id of ['r1', 'r2', 'r3']) {
+                const el = document.getElementById(id);
+                el.style.display = vis ? 'block' : 'none';
+                el.style.left = mq.x + 'px'; el.style.top = (mq.y + 6) + 'px';
+            }
+        }
+
+        let lt = 0;
+        function animate(ts) {
+            const dt = Math.min((ts - lt) / 1000, .05); lt = ts;
+            if (animating && targetRotY !== null) {
+                let dy = targetRotY - rotY; while (dy > Math.PI) dy -= Math.PI * 2; while (dy < -Math.PI) dy += Math.PI * 2;
+                const dx = targetRotX - rotX;
+                if (Math.abs(dy) < .005 && Math.abs(dx) < .005) { rotY = targetRotY; rotX = targetRotX; animating = false; }
+                else { rotY += dy * .06; rotX += dx * .06; }
+            } else if (autoRotate && !isDragging) rotY += .003;
+            draw();
+            requestAnimationFrame(animate);
+        }
+
+        canvas.addEventListener('mousedown', e => { isDragging = true; lastMouse = { x: e.clientX, y: e.clientY }; autoRotate = false; document.getElementById('btnAuto').classList.remove('active'); });
+        window.addEventListener('mousemove', e => { if (!isDragging) return; rotY += (e.clientX - lastMouse.x) * .005; rotX += (e.clientY - lastMouse.y) * .005; rotX = Math.max(-1.4, Math.min(1.4, rotX)); lastMouse = { x: e.clientX, y: e.clientY }; });
+        window.addEventListener('mouseup', () => isDragging = false);
+        canvas.addEventListener('touchstart', e => { isDragging = true; lastMouse = { x: e.touches[0].clientX, y: e.touches[0].clientY }; });
+        canvas.addEventListener('touchmove', e => { if (!isDragging) return; rotY += (e.touches[0].clientX - lastMouse.x) * .005; rotX += (e.touches[0].clientY - lastMouse.y) * .005; lastMouse = { x: e.touches[0].clientX, y: e.touches[0].clientY }; });
+        canvas.addEventListener('touchend', () => isDragging = false);
+
+        function toggleAuto() { autoRotate = !autoRotate; animating = false; document.getElementById('btnAuto').classList.toggle('active', autoRotate); }
+        function focusCountry(lat, lon) { markerLat = lat; markerLon = lon; targetRotY = (lon * Math.PI / 180) * -1; targetRotX = (lat * Math.PI / 180) * -.5; animating = true; autoRotate = false; document.getElementById('btnAuto').classList.remove('active'); }
+
+        focusCountry(14.6, -17.4);
+        requestAnimationFrame(animate);
+        function loadVideo(input, playerId, boxId) {
+            const file = input.files[0];         // récupère le fichier choisi
+            const url = URL.createObjectURL(file); // crée un lien temporaire
+            const player = document.getElementById(playerId);
+            box.querySelector('.upload-area').style.display = 'none'; // cache le bouton
+            player.src = url;        // met la vidéo dans le lecteur
+            player.style.display = 'block';
+            player.play();           // lance la vidéo
+        }
+
+    </script>
+    <!-- ══ SECTION VIDÉOS ══ -->
+    <section class="videos-section">
+        <h2 class="videos-title">🎬 MES VIDÉOS</h2>
+        <div class="videos-grid">
+
+            <div class="video-card">
+                <div class="video-label">Vidéo 1</div>
+                <div class="video-box" id="box1">
+                    <label class="upload-area" for="vid1">
+                        <span class="upload-icon">▶</span>
+                        <span class="upload-text">Clique ici pour choisir ta vidéo</span>
+                        <input type="file" id="vid1" accept="video/*" onchange="loadVideo(this, 'player1', 'box1')" />
+                    </label>
+                    <video id="player1" controls style="display:none;width:100%;border-radius:8px;"></video>
+                </div>
+            </div>
+
+            <div class="video-card">
+                <div class="video-label">Vidéo 2</div>
+                <div class="video-box" id="box2">
+                    <label class="upload-area" for="vid2">
+                        <span class="upload-icon">▶</span>
+                        <span class="upload-text">Clique ici pour choisir ta vidéo</span>
+                        <input type="file" id="vid2" accept="video/*" onchange="loadVideo(this, 'player2', 'box2')" />
+                    </label>
+                    <video id="player2" controls style="display:none;width:100%;border-radius:8px;"></video>
+                </div>
+            </div>
+
+        </div>
+    </section>
+</body>
+
+
+</html>
